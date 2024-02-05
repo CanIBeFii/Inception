@@ -1,0 +1,24 @@
+version: '3.5'
+services:
+  mariadb:
+    container_name: Mariadb
+    build: requirements/mariadb/.
+    restart: always
+    networks:
+      - mynetwork
+    volumes:
+      - db:/var/lib/mysql
+    env_file: .env
+
+networks:
+  mynetwork:
+    name : mynetwork
+    driver : bridge
+
+volumes:
+  db:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ./my_volume
