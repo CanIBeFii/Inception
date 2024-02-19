@@ -1,0 +1,11 @@
+logs/
+.env
+.git
+.gitignore
+.cache
+*.md
+.vscode
+Makefile
+.dockerignore
+docker-compose.yml
+Dockerfile
