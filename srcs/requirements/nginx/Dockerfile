@@ -1,16 +1,17 @@
-FROM debian.bullseye
+FROM debian:3.18
 
-# Upgrade system and install basic applications
-RUN apt update -y && apt upgrade -y
-RUN apt install nginx -y
-RUN apt install curl -y
-RUN apt install vim -y
+RUN apk update \
+	&& apk upgrade \
+	&& apk add --no-cache nginx openssl gettext
 
-# Install and setup SSL
-RUN mkdir -p /etc/nginx/ssl
-RUN apt install OpenSSL -y
-RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/nginx/ssl/inception.key -subj "/C=PT/ST=LIS/O=42/OU=student/CN=fialexan.42.fr"
+RUN mkdir -p /etc/nginx/http.d \
+	&& rm /etc/nginx/http.d/*.conf
 
-# Config files
-RUN mkdir -p /var/run/nginx
-COPY conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./conf/default.conf /default.conf.tmpl
+
+COPY ./tools/run.sh /run.sh
+
+RUN chmod +x /run-sh
+
+ENTRYPOINT [ "/run.sh" ]
+

@@ -1,16 +1,28 @@
 # Operating System
-FROM debian.bullseye
+FROM alpine:3.18
 
 # Update system and installation
-RUN apt-get update -y && apt-get upgrade -y
-RUN apt install -y mariadb-server
+RUN apk update \
+	&& apk upgrade \
+	&& apk add --no-cache mariadb mariadb-client gettext
 
-# Get the configuration file
-COPY ./conf/mariadb.cnf /etc/mysql/mariadb.conf.d/
+RUN mkdir -p /run/mysqld \
+	&& chown -R mysql:mysql /run/mysqld
 
-# Get script
-COPY ./tools/script.sh /
-RUN chmod +x /scripth.sh
+COPY ./conf/my_config.cnf /my_config.cnf.tmpl
 
+RUN chmod 744 /my_config.cnf.tmpl
 
-ENTRYPOINT [ "/script.sh" ]
+RUN rm -f /etc/mysql/my_config.cnf
+
+COPY ./conf/tmpl.sql /tmpl.sql
+
+COPY./tools/run.sh /run.sh
+
+RUN chmod +x /run.sh
+
+VOLUME [ "/sys/fs/cgroup" ]
+
+EXPOSE 3306
+
+ENTRYPOINT [ "/run.sh" ]
