@@ -3,16 +3,16 @@ FROM alpine:3.18
 ARG	WORDPRESS_VERSION=5.8.1
 
 RUN apk update \
-	&& apk upgrade
+	&& apk upgrade \
 	&& apk add --no-cache wget gettext \
-	php7 php7-fpm php7-mysqli php7-zip php7-gd \
- 	php7-mbstring php7-cli php7-opcache php7-zlib \
-	php7-curl php7-json php7-iconv php7-gettext \
-	php7-session php7-phar mariadb-client php7-pdo php7-pdo_mysql \
-	php7-dom php7-ctype php7-bcmath php7-fileinfo php7-intl php7-mcrypt \
-	php7-mysqlnd php7-openssl php7-pdo_pgsql php7-pdo_sqlite php7-posix \
-	php7-simplexml php7-soap php7-tokenizer php7-xml php7-xmlreader \
-	php7-xmlwriter
+	php8 php8-fpm php8-mysqli php8-zip php8-gd \
+ 	php8-mbstring php8-cli php8-opcache php8-zlib \
+	php8-curl php8-json php8-iconv php8-gettext \
+	php8-session php8-phar mariadb-client php8-pdo php8-pdo_mysql \
+	php8-dom php8-ctype php8-bcmath php8-fileinfo php8-intl php8-mcrypt \
+	php8-mysqlnd php8-openssl php8-pdo_pgsql php8-pdo_sqlite php8-posix \
+	php8-simplexml php8-soap php8-tokenizer php8-xml php8-xmlreader \
+	php8-xmlwriter
 
 RUN wget https://raw.gitbusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
 	--output-document=/user/local/bin/wp \

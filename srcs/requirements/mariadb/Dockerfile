@@ -17,7 +17,7 @@ RUN rm -f /etc/mysql/my_config.cnf
 
 COPY ./conf/tmpl.sql /tmpl.sql
 
-COPY./tools/run.sh /run.sh
+COPY ./tools/run.sh /run.sh
 
 RUN chmod +x /run.sh
 
