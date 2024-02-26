@@ -1,28 +1,28 @@
 # Operating System
-FROM alpine:3.18
+FROM	debian:bullseye
 
 # Update system and installation
-RUN apk update \
-	&& apk upgrade \
-	&& apk add --no-cache mariadb mariadb-client gettext
+RUN	apt-get update -y \
+	&& apt-get upgrade -y \
+	&& apt-get install mariadb-server mariadb-client -y
 
-RUN mkdir -p /run/mysqld \
-	&& chown -R mysql:mysql /run/mysqld
+# Creating directory for the database
+RUN	mkdir -p /var/run/mysqld \
+	&& chown -R mysql:mysql /var/run/mysqld \
+	&& chown -R mysql:mysql /etc/mysql
 
-COPY ./conf/my_config.cnf /my_config.cnf.tmpl
 
-RUN chmod 744 /my_config.cnf.tmpl
+# Copying configuration files
+COPY	./tools/run.sh /tmp/
+COPY	./conf/config.sql /tmp/
+COPY	./conf/my_config.cnf /etc/mysql
 
-RUN rm -f /etc/mysql/my_config.cnf
+RUN	chown -R mysql:mysql /tmp/ \
+	&& chown -R mysql:mysql /etc/mysql
 
-COPY ./conf/tmpl.sql /tmpl.sql
 
-COPY ./tools/run.sh /run.sh
+EXPOSE	3306
 
-RUN chmod +x /run.sh
+USER	mysql
 
-VOLUME [ "/sys/fs/cgroup" ]
-
-EXPOSE 3306
-
-ENTRYPOINT [ "/run.sh" ]
+ENTRYPOINT [ "sh", "/tmp/run.sh" ]
