@@ -2,8 +2,8 @@ FROM	debian:bullseye
 
 RUN	apt-get update -y \
 	&& apt-get upgrade -y \
-	&& apt-get install -y php7.4 php-mysql php-cli \
-	php-mbstring php-fpm php-gettext mariadb-client wget \
+	&& apt-get install -y php8.3 php8.3-mysql php8.3-cli \
+	php8.3-mbstring php8.3-fpm php8.3-gettext mariadb-client wget \
 
 RUN	rm -rf /etc/php/8.3/fpm/pool.d/www.conf \
 	&& mkdir -p /run/php
