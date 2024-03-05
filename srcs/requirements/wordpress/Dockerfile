@@ -1,10 +1,8 @@
 FROM	debian:bullseye
 
-ARG	WORDPRESS_VERSION=5.8.1
-
 RUN	apt-get update -y \
 	&& apt-get upgrade -y \
-	&& apt-get install -y php php-mysql php-cli \
+	&& apt-get install -y php7.4 php-mysql php-cli \
 	php-mbstring php-fpm php-gettext mariadb-client wget \
 
 RUN	rm -rf /etc/php/8.3/fpm/pool.d/www.conf \
