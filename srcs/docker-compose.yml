@@ -1,65 +1,58 @@
 version: '3.9'
 
 services:
-  nginx-server:
-    build: ./requirements/nginx
-    image: nginx-server
-    container_name: nginx-server
-    ports:
-      - "443:443"
-    depends_on:
-      - wordpress-site
-    volumes:
-      - wp:/var/www/html
-    networks:
-      - inception
-    restart: on-failure
+	mariadb:
+		build: requirements/mariadb
+		image: mariadb
+		container_name: mariadb
+		env_file: /env
+		volumes:
+			- mariadb:/var/lib/mysql
+		restart: on-failure
+		networks:
+			- my-inception
 
-  mariadb-data:
-    container_name: mariadb-data
-    build: ./requirements/mariadb
-    restart: on-failure
-    image: mariadb-data
-    volumes:
-      - db:/var/lib/mysql
-    env_file:
-      - .env
-    networks:
-      - inception
-    expose:
-      - 3306
-    
-  wordpress-site:
-    build: ./requirements/wordpress
-    image: wordpress-site
-    container_name: wordpress-site
-    env_file:
-      - .env
-    depends_on:
-      - mariadb-data
-    volumes:
-      - wp:/var/www/html
-    networks:
-      - inception
-    restart: on-failure
-    expose:
-      - 9000
-
-volumes:
-  db:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/data/mysql
-
-  wp:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/data/wordpress 
+	wordpress:
+		build: requirements/wordpress
+		image: wordpress
+		depends_on:
+			- mariadb
+		container_name: wordpress
+		env_file: .env
+		volumes:
+			- wordpress:/var/www/wordpress
+		restart: on-failure
+		networks:
+			- my-inception
+		
+	nginx:
+		build: requirements/nginx
+		image: nginx
+		depends_on:
+			- wordpress
+		container_name: nginx
+		env_file: .env
+		volumes:
+			- wordpress:/var/www/wordpress
+		ports:
+			- "443:443"
+		restart: on-failure
+		networks:
+			- my-inception
 
 networks:
-  inception:
-    name: inception
+	my-inception:
+		driver: bridge
+
+volumes:
+	mariadb:
+		driver_opts:
+			type: none
+			device: /home/fialexan/data/mysql
+			o: bind
+	
+	wordpress:
+		driver_opts:
+			type: none
+			device: /home/fialexan/data/html
+			o: bind
