@@ -1,3 +1,0 @@
-[mysqld]
-port=MARIADB_PORT
-bind-address=MARIADB_ADDRESS

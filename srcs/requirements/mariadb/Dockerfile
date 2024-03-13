@@ -4,25 +4,19 @@ FROM	debian:bullseye
 # Update system and installation
 RUN	apt-get update -y \
 	&& apt-get upgrade -y \
-	&& apt-get install mariadb-server mariadb-client -y
-
-# Creating directory for the database
-RUN	mkdir -p /var/run/mysqld \
-	&& chown -R mysql:mysql /var/run/mysqld \
-	&& chown -R mysql:mysql /etc/mysql
-
+	&& apt-get install mariadb-server -y
 
 # Copying configuration files
 COPY	./tools/run.sh /tmp/
-COPY	./conf/config.sql /tmp/
-COPY	./conf/my_config.cnf /etc/mysql
 
-RUN	chown -R mysql:mysql /tmp/ \
-	&& chown -R mysql:mysql /etc/mysql
+# Giving permission to execute
+RUN chmod +x /tmp/run.sh
 
+# Installing database
+RUN mysql_install_db
 
 EXPOSE	3306
 
-USER	mysql
+ENTRYPOINT [ "/tmp/run.sh" ]
 
-ENTRYPOINT [ "sh", "/tmp/run.sh" ]
+CMD [ "mysqld_safe", "--bind-address=0.0.0.0" ]

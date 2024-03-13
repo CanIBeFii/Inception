@@ -7,7 +7,7 @@ RUN apt-get update -y \
 	&& apt-get install -y nginx openssl
 
 # Creating directories
-RUN	mkdir -p /etc/nginx/ssl \
+RUN	mkdir -p /etc/nginx/ssl  /var/www/ \
 	&& mkdir -p /run/nginx \
 	&& chown -R www-data /var/lib/nginx \
 	&& rm -rf /etc/nginx/sites-available/default
