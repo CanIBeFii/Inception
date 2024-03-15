@@ -7,7 +7,7 @@ RUN apt-get update -y \
 	&& apt-get install -y nginx curl
 
 # Creating directories
-RUN	mkdir -p /etc/nginx/ssl  /var/www/html \
+RUN	mkdir -p /etc/nginx/ssl  /var/www \
 	&& mkdir -p /run/nginx
 
 # Install mkcert tool, for automatic SSL/TLS certificate creation

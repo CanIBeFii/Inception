@@ -32,7 +32,7 @@ services:
         
     nginx-ngx:
         build: requirements/nginx
-        image: nginx-server
+        image: nginx-ngx
         depends_on:
             - wordpress-wp
         container_name: nginx-ngx
@@ -47,7 +47,7 @@ services:
 
 networks:
     my-inception:
-        driver: bridge
+        name: my-inception
 
 volumes:
     db:
