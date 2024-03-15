@@ -3,9 +3,10 @@ version: '3.9'
 services:
     mariadb-db:
         build: ./requirements/mariadb
-        image: mariadb
+        image: mariadb-db
         container_name: mariadb-db
-        env_file: .env
+        env_file: 
+            - .env
         volumes:
             - db:/var/lib/mysql
         restart: on-failure
@@ -16,26 +17,28 @@ services:
 
     wordpress-wp:
         build: requirements/wordpress
-        image: wordpress
+        image: wordpress-wp
         depends_on:
             - mariadb-db
-        container_name: wordpress
+        container_name: wordpress-wp
         env_file: .env
         volumes:
-            - wp:/var/www/wordpress
+            - wp:/var/www/html
         restart: on-failure
         networks:
             - my-inception
+        expose:
+            - 9000
         
-    nginx:
+    nginx-ngx:
         build: requirements/nginx
-        image: nginx
+        image: nginx-server
         depends_on:
             - wordpress-wp
-        container_name: nginx
+        container_name: nginx-ngx
         env_file: .env
         volumes:
-            - wp:/var/www/wordpress
+            - wp:/var/www/html
         ports:
             - "443:443"
         restart: on-failure
@@ -48,79 +51,15 @@ networks:
 
 volumes:
     db:
+        driver: local
         driver_opts:
             type: none
             device: /home/fialexan/data/mysql
             o: bind
 
     wp:
+        driver: local
         driver_opts:
             type: none
             device: /home/fialexan/data/html
             o: bind
-
-
-# version: '3.8'
-
-# services:
-#   nginx-server:
-#     build: ./requirements/nginx
-#     image: nginx-server
-#     container_name: nginx-server
-#     ports:
-#       - "443:443"
-#     depends_on:
-#       - wordpress-site
-#     volumes:
-#       - wp:/var/www/html
-#     networks:
-#       - inception
-#     restart: on-failure
-
-#   mariadb-data:
-#     container_name: mariadb-data
-#     build: ./requirements/mariadb
-#     restart: on-failure
-#     image: mariadb-data
-#     volumes:
-#       - db:/var/lib/mysql
-#     env_file: 
-#       - .env
-#     networks:
-#       - inception
-#     expose:
-#       - 3306
-
-#   wordpress-site:
-#     build: ./requirements/wordpress
-#     image: wordpress-site
-#     container_name: wordpress-site
-#     env_file:
-#       - .env
-#     depends_on:
-#       - mariadb-data
-#     volumes:
-#       - wp:/var/www/html
-#     networks:
-#       - inception
-#     restart: on-failure
-#     expose:
-#       - 9000
-
-# volumes:
-#   db:
-#     driver: local
-#     driver_opts:
-#       type: none
-#       device: /home/mibernar/inception/data/mysql
-#       o: bind
-#   wp:
-#     driver: local
-#     driver_opts:
-#       type: none
-#       device: /home/mibernar/inception/data/wordpress
-#       o: bind
-
-# networks:
-#   inception:
-#     name: inception
